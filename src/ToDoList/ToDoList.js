@@ -7,12 +7,16 @@ import { Button } from "../Components/Button";
 import { Table, Thead, Th, Tr } from "../Components/Table";
 import {connect} from "react-redux";
 import {ThemeProvider} from "styled-components"
+import { AddTaskAction } from "../redux/actions/ToDoListAction";
 class ToDoList extends Component {
+  state = {
+    taskName: "",
+  };
   renderTaskTodo = () => {
     return this.props.taskList.filter(task => !task.done).map((task, index)=>{
       return(
         <Tr key={index}>
-        <Th>{task.name}</Th>
+        <Th>{task.taskName}</Th>
         <Th className="text-end">
           <Button className="ms-2">
             <i className="fa fa-edit"></i>
@@ -36,7 +40,7 @@ class ToDoList extends Component {
     return this.props.taskList.filter(task=> task.done).map((task, index)=>{
       return(
         <Tr key={index}>
-        <Th>{task.name}</Th>
+        <Th>{task.taskName}</Th>
         <Th className="text-end">
           <Button className="ms-2">
             <i className="fa fa-trash"></i>
@@ -46,6 +50,7 @@ class ToDoList extends Component {
       );
     });
   }
+
   render() {
     return (
       <div>
@@ -58,8 +63,21 @@ class ToDoList extends Component {
           </Dropdown>
 
           <Heading3 className="fw-bold">To Do List</Heading3>
-          <TextField label="Task Name" className="w-75"></TextField>
-          <Button className="ms-2">
+          <TextField label="Task Name" name="taskName" className="w-75" onChange={(event)=>{
+            this.setState({
+              taskName: event.target.value,
+            });
+          }}/>
+          <Button className="ms-2" onClick={()=>{
+            let {taskName} = this.state;
+
+            let newTask = {
+              id: Date.now,
+              taskName: taskName,
+              done: false
+            }
+            this.props.dispatch(AddTaskAction(newTask));
+          }}>
             <i className="fa fa-plus"> Add Task</i>
           </Button>
           <Button className="ms-2">
