@@ -1,7 +1,13 @@
 import { ToDoListDarkTheme } from "../../themes/ToDoListDarkTheme";
-import { ADD_TASK, DELETE_TASK, DONE_TASK } from "../types/ToDoListType";
+import {
+  ADD_TASK,
+  DELETE_TASK,
+  DONE_TASK,
+  CHANGE_THEME,
+} from "../types/ToDoListType";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { arrTheme } from "../../themes/ThemeManager";
 const initialState = {
   ThemeDefault: ToDoListDarkTheme,
   taskList: [
@@ -74,7 +80,23 @@ const ToDoListReducer = (state = initialState, action) => {
       // return { ...state, taskList: result };
 
       // Option 3
-      return {...state, taskList: state.taskList.filter(task=> task.id !== action.taskId)}
+      return {
+        ...state,
+        taskList: state.taskList.filter((task) => task.id !== action.taskId),
+      };
+    }
+
+    case CHANGE_THEME: {
+      // eslint-disable-next-line eqeqeq
+      let theme = arrTheme.find((theme) => theme.id == action.themeId);
+      console.log(theme);
+      if(theme) {
+        state.ThemeDefault = {...theme.theme};
+      }
+
+      return { ...state };
+
+      
     }
 
     default:
