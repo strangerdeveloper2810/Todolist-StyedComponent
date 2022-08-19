@@ -7,7 +7,7 @@ import { Button } from "../Components/Button";
 import { Table, Thead, Th, Tr } from "../Components/Table";
 import {connect} from "react-redux";
 import {ThemeProvider} from "styled-components"
-import { AddTaskAction } from "../redux/actions/ToDoListAction";
+import { AddTaskAction, DoneTaskAction } from "../redux/actions/ToDoListAction";
 class ToDoList extends Component {
   state = {
     taskName: "",
@@ -22,7 +22,9 @@ class ToDoList extends Component {
             <i className="fa fa-edit"></i>
           </Button>
 
-          <Button className="ms-2">
+          <Button className="ms-2" onClick={()=>{
+            this.props.dispatch(DoneTaskAction(task.id));
+          }}>
             <i className="fa fa-check"></i>
           </Button>
 
