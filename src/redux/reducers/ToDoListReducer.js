@@ -1,5 +1,5 @@
 import { ToDoListDarkTheme } from "../../themes/ToDoListDarkTheme";
-import { ADD_TASK, DONE_TASK } from "../types/ToDoListType";
+import { ADD_TASK, DELETE_TASK, DONE_TASK } from "../types/ToDoListType";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const initialState = {
@@ -48,14 +48,33 @@ const ToDoListReducer = (state = initialState, action) => {
     }
 
     case DONE_TASK: {
-     let taskListUpdate = [...state.taskList];
-     let index = taskListUpdate.findIndex(task => task.id === action.taskId);
+      let taskListUpdate = [...state.taskList];
+      let index = taskListUpdate.findIndex((task) => task.id === action.taskId);
 
-     if(index !== -1) {
-      taskListUpdate[index].done = true;
-     }
+      if (index !== -1) {
+        taskListUpdate[index].done = true;
+      }
 
-      return {...state, taskList: taskListUpdate};
+      return { ...state, taskList: taskListUpdate };
+    }
+
+    case DELETE_TASK: {
+      // Option 1
+      // let taskListUpdate = [...state.taskList];
+      // let index = taskListUpdate.findIndex((task) => task.id === action.taskId);
+
+      // if (index !== -1) {
+      //   taskListUpdate.splice(index, 1);
+      // }
+      // return { ...state, taskList: taskListUpdate };
+
+      // Option 2
+      // let taskListUpdate = [...state.taskList];
+      // let result = taskListUpdate.filter((task) => task.id !== action.taskId);
+      // return { ...state, taskList: result };
+
+      // Option 3
+      return {...state, taskList: state.taskList.filter(task=> task.id !== action.taskId)}
     }
 
     default:
