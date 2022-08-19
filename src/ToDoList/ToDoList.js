@@ -5,10 +5,51 @@ import { Heading3 } from "../Components/Heading";
 import { TextField } from "../Components/TextField";
 import { Button } from "../Components/Button";
 import { Table, Thead, Th, Tr } from "../Components/Table";
-export default class ToDoList extends Component {
+import {connect} from "react-redux";
+import {ThemeProvider} from "styled-components"
+class ToDoList extends Component {
+  renderTaskTodo = () => {
+    return this.props.taskList.filter(task => !task.done).map((task, index)=>{
+      return(
+        <Tr key={index}>
+        <Th>{task.name}</Th>
+        <Th className="text-end">
+          <Button className="ms-2">
+            <i className="fa fa-edit"></i>
+          </Button>
+
+          <Button className="ms-2">
+            <i className="fa fa-check"></i>
+          </Button>
+
+          <Button className="ms-2">
+            <i className="fa fa-trash"></i>
+          </Button>
+        </Th>
+      </Tr>
+
+      );
+    });
+  }
+
+  renderTaskCompleted = () => {
+    return this.props.taskList.filter(task=> task.done).map((task, index)=>{
+      return(
+        <Tr key={index}>
+        <Th>{task.name}</Th>
+        <Th className="text-end">
+          <Button className="ms-2">
+            <i className="fa fa-trash"></i>
+          </Button>
+        </Th>
+      </Tr>
+      );
+    });
+  }
   render() {
     return (
       <div>
+        <ThemeProvider theme={this.props.ThemeDefault}>
         <Container>
           <Dropdown>
             <option value="1">Dark Theme</option>
@@ -29,66 +70,26 @@ export default class ToDoList extends Component {
           <Heading3 className="fw-bold">Task To Do</Heading3>
           <Table>
             <Thead>
-              <Tr>
-                <Th>Learn VueJS</Th>
-                <Th className="text-end">
-                  <Button className="ms-2">
-                    <i className="fa fa-edit"></i>
-                  </Button>
-
-                  <Button className="ms-2">
-                    <i className="fa fa-check"></i>
-                  </Button>
-
-                  <Button className="ms-2">
-                    <i className="fa fa-trash"></i>
-                  </Button>
-                </Th>
-              </Tr>
-
-              <Tr>
-                <Th>Learn Angular</Th>
-                <Th className="text-end">
-                  <Button className="ms-2">
-                    <i className="fa fa-edit"></i>
-                  </Button>
-
-                  <Button className="ms-2">
-                    <i className="fa fa-check"></i>
-                  </Button>
-
-                  <Button className="ms-2">
-                    <i className="fa fa-trash"></i>
-                  </Button>
-                </Th>
-              </Tr>
+              {this.renderTaskTodo()} 
             </Thead>
           </Table>
 
           <Heading3 className="fw-bold">Task Complete</Heading3>
           <Table>
             <Thead>
-              <Tr>
-                <Th>Learn ReactJS</Th>
-                <Th className="text-end">
-                  <Button className="ms-2">
-                    <i className="fa fa-trash"></i>
-                  </Button>
-                </Th>
-              </Tr>
-
-              <Tr>
-                <Th>Learn NodeJS</Th>
-                <Th className="text-end">
-                  <Button className="ms-2">
-                    <i className="fa fa-trash"></i>
-                  </Button>
-                </Th>
-              </Tr>
+              {this.renderTaskCompleted()}
             </Thead>
           </Table>
         </Container>
+        </ThemeProvider>
       </div>
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    ThemeDefault: state.ToDoListReducer.ThemeDefault,
+    taskList : state.ToDoListReducer.taskList,
+  }
+}
+export default connect(mapStateToProps)(ToDoList);
