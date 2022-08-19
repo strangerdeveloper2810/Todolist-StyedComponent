@@ -1,4 +1,9 @@
-import { ADD_TASK, DONE_TASK,DELETE_TASK } from "../types/ToDoListType";
+import {
+  ADD_TASK,
+  DONE_TASK,
+  DELETE_TASK,
+  CHANGE_THEME,
+} from "../types/ToDoListType";
 
 export const AddTaskAction = (newTask) => {
   return {
@@ -10,15 +15,20 @@ export const AddTaskAction = (newTask) => {
 export const DoneTaskAction = (taskId) => {
   return {
     type: DONE_TASK,
-    taskId
+    taskId,
   };
 };
 
-export const DeleteTaskAction = taskId => {
-    return {
-        type: DELETE_TASK,
-        taskId
-    }
-}
+export const DeleteTaskAction = (taskId) => {
+  return {
+    type: DELETE_TASK,
+    taskId,
+  };
+};
 
-
+export const ChangeThemeAction = (themeId) => {
+  return {
+    type: CHANGE_THEME,
+    themeId,
+  };
+};
