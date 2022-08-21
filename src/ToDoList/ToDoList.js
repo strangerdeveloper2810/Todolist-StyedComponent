@@ -19,8 +19,10 @@ import { arrTheme } from "../themes/ThemeManager";
 class ToDoList extends Component {
   state = {
     taskName: "",
+    disable: true,
   };
-  renderTaskTodo = () => {
+
+  renderTaskToDo = () => {
     return this.props.taskList
       .filter((task) => !task.done)
       .map((task, index) => {
@@ -31,7 +33,14 @@ class ToDoList extends Component {
               <Button
                 className="ms-2"
                 onClick={() => {
-                  this.props.dispatch(EditTaskAction(task));
+                  this.setState(
+                    {
+                      disabled: false,
+                    },
+                    () => {
+                      this.props.dispatch(EditTaskAction(task));
+                    }
+                  );
                 }}
               >
                 <i className="fa fa-edit"></i>
@@ -94,76 +103,109 @@ class ToDoList extends Component {
 
   render() {
     return (
-      <div>
-        <ThemeProvider theme={this.props.ThemeDefault}>
-          <Container>
-            <Dropdown
-              onChange={(event) => {
-                let { value } = event.target;
-                this.props.dispatch(ChangeThemeAction(value));
+      <ThemeProvider theme={this.props.ThemeDefault}>
+        <Container className="w-50">
+          <Dropdown
+            onChange={(event) => {
+              let { value } = event.target;
+
+              // dispatch value lên reducer
+              this.props.dispatch(ChangeThemeAction(value));
+            }}
+          >
+            {this.renderTheme()}
+          </Dropdown>
+          <Heading3>To Do List</Heading3>
+          <TextField
+            value={this.state.taskName}
+            name="taskName"
+            label="Task name"
+            className="w-50"
+            onChange={(event) => {
+              this.setState({
+                taskName: event.target.value,
+              });
+            }}
+          />
+          <Button
+            className="ms-2"
+            onClick={() => {
+              // Lấy thông tin người dùng nhập vào từ input
+              let { taskName } = this.state;
+              // Tạo ra 1 task object
+              let newtask = {
+                id: Date.now(),
+                taskName: taskName,
+                done: false,
+              };
+              // Đưa task object lên redux thông qua phương thức dispatch
+              this.props.dispatch(AddTaskAction(newtask));
+            }}
+          >
+            <i className="fa fa-plus"></i>
+            Add Task
+          </Button>
+
+          {this.state.disabled ? (
+            <Button
+              className="ms-2"
+              disabled
+              onClick={() => {
+                this.props.dispatch(UpdateTaskAction(this.state.taskName));
               }}
             >
-              {this.renderTheme()}
-            </Dropdown>
-
-            <Heading3 className="fw-bold">To Do List</Heading3>
-            <TextField
-              label="Task Name"
-              name="taskName"
-              value={this.state.taskName}
-              className="w-75"
-              onChange={(event) => {
-                this.setState({
-                  taskName: event.target.value,
-                });
-              }}
-            />
+              <i className="fa fa-upload"></i>
+              Update Task
+            </Button>
+          ) : (
             <Button
               className="ms-2"
               onClick={() => {
-                let { taskName } = this.state;
-
-                let newTask = {
-                  id: Date.now,
-                  taskName: taskName,
-                  done: false,
-                };
-                this.props.dispatch(AddTaskAction(newTask));
+                let {taskName} = this.state;
+                this.setState(
+                  {
+                    disabled: true,
+                    taskName: ""
+                  },
+                  () => {
+                    this.props.dispatch(UpdateTaskAction(taskName));
+                  }
+                );
               }}
             >
-              <i className="fa fa-plus"> Add Task</i>
+              <i className="fa fa-upload"></i>
+              Update Task
             </Button>
-            <Button className="ms-2" onClick={()=>{
-              this.props.dispatch(UpdateTaskAction(this.state.taskName));
-            }}>
-              <i className="fa fa-upload"> Update Task</i>
-            </Button>
-            <hr />
+          )}
 
-            <Heading3 className="fw-bold">Task To Do</Heading3>
-            <Table>
-              <Thead>{this.renderTaskTodo()}</Thead>
-            </Table>
+          <hr />
+          <Heading3>Task To Do</Heading3>
+          <Table>
+            <Thead>{this.renderTaskToDo()}</Thead>
+          </Table>
 
-            <Heading3 className="fw-bold">Task Complete</Heading3>
-            <Table>
-              <Thead>{this.renderTaskCompleted()}</Thead>
-            </Table>
-          </Container>
-        </ThemeProvider>
-      </div>
+          <Heading3>Task Complete</Heading3>
+          <Table>
+            <Thead>{this.renderTaskCompleted()}</Thead>
+          </Table>
+        </Container>
+      </ThemeProvider>
     );
   }
+
 
   //Đây là lifecycle trả về props cũ và state cũ của component trước khi render (lifecycle này chạy sau render)
   componentDidUpdate(prevProps, prevState) {
     //So sánh nếu như props trước đó (taskEdit trước khác taskEdit hiện tại thì mình mới setState)
-    if(prevProps.taskEdit.id !== this.props.taskEdit.id) {
-      this.setState({
-        taskName: this.props.taskEdit.taskName
-      },()=>{
-        console.log(this.state);
-      });
+    if (prevProps.taskEdit.id !== this.props.taskEdit.id) {
+      this.setState(
+        {
+          taskName: this.props.taskEdit.taskName,
+        },
+        () => {
+          console.log(this.state);
+        }
+      );
     }
   }
 }
