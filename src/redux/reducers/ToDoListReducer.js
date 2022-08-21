@@ -53,6 +53,11 @@ const ToDoListReducer = (state = initialState, action) => {
 
       taskListUpdate.push(action.newTask);
       state.taskList = taskListUpdate;
+      Swal.fire(
+        'Success!',
+        `Adding Success!`,
+        'success'
+      )
       return { ...state };
     }
 
@@ -83,6 +88,11 @@ const ToDoListReducer = (state = initialState, action) => {
       // return { ...state, taskList: result };
 
       // Option 3
+      Swal.fire(
+        'Success!',
+        `Delete Success!`,
+        'success'
+      ) 
       return {
         ...state,
         taskList: state.taskList.filter((task) => task.id !== action.taskId),
@@ -116,6 +126,11 @@ const ToDoListReducer = (state = initialState, action) => {
       }
       state.taskList = taskListUpdate;
       state.taskEdit = { id: "-1", taskName: "", done: false };
+      Swal.fire(
+        'Success!',
+        `Updating Success!`,
+        'success'
+      )
       return { ...state };
     }
     
