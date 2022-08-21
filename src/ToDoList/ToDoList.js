@@ -9,9 +9,9 @@ import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import {
   AddTaskAction,
-  ChangeThemeAction,
   DeleteTaskAction,
   DoneTaskAction,
+  ChangeThemeAction,
   EditTaskAction,
   UpdateTaskAction,
 } from "../redux/actions/ToDoListAction";
@@ -142,8 +142,7 @@ class ToDoList extends Component {
               this.props.dispatch(AddTaskAction(newtask));
             }}
           >
-            <i className="fa fa-plus"></i>
-            Add Task
+            <i className="fa fa-plus"> Add Task</i>
           </Button>
 
           {this.state.disabled ? (
@@ -154,18 +153,17 @@ class ToDoList extends Component {
                 this.props.dispatch(UpdateTaskAction(this.state.taskName));
               }}
             >
-              <i className="fa fa-upload"></i>
-              Update Task
+              <i className="fa fa-upload"> Update Task</i>
             </Button>
           ) : (
             <Button
               className="ms-2"
               onClick={() => {
-                let {taskName} = this.state;
+                let { taskName } = this.state;
                 this.setState(
                   {
                     disabled: true,
-                    taskName: ""
+                    taskName: "",
                   },
                   () => {
                     this.props.dispatch(UpdateTaskAction(taskName));
@@ -192,7 +190,6 @@ class ToDoList extends Component {
       </ThemeProvider>
     );
   }
-
 
   //Đây là lifecycle trả về props cũ và state cũ của component trước khi render (lifecycle này chạy sau render)
   componentDidUpdate(prevProps, prevState) {
