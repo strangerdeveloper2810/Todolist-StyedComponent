@@ -4,6 +4,7 @@ import {
   DELETE_TASK,
   DONE_TASK,
   CHANGE_THEME,
+  EDIT_TASK,
 } from "../types/ToDoListType";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -16,6 +17,7 @@ const initialState = {
     { id: "task-3", taskName: "Learn Angular", done: false },
     { id: "task-4", taskName: "Learn VueJS", done: false },
   ],
+  taskEdit: { id: "task-4", taskName: "Learn VueJS", done: false },
 };
 
 const Error = withReactContent(Swal);
@@ -90,13 +92,15 @@ const ToDoListReducer = (state = initialState, action) => {
       // eslint-disable-next-line eqeqeq
       let theme = arrTheme.find((theme) => theme.id == action.themeId);
       console.log(theme);
-      if(theme) {
-        state.ThemeDefault = {...theme.theme};
+      if (theme) {
+        state.ThemeDefault = { ...theme.theme };
       }
 
       return { ...state };
+    }
 
-      
+    case EDIT_TASK: {
+      return { ...state, taskEdit: action.task };
     }
 
     default:
