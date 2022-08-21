@@ -5,6 +5,7 @@ import {
   DONE_TASK,
   CHANGE_THEME,
   EDIT_TASK,
+  UPDATE_TASK,
 } from "../types/ToDoListType";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -17,7 +18,7 @@ const initialState = {
     { id: "task-3", taskName: "Learn Angular", done: false },
     { id: "task-4", taskName: "Learn VueJS", done: false },
   ],
-  taskEdit: { id: "task-4", taskName: "Learn VueJS", done: false },
+  taskEdit: { id: "-1", taskName: "", done: false },
 };
 
 const Error = withReactContent(Swal);
@@ -102,6 +103,24 @@ const ToDoListReducer = (state = initialState, action) => {
     case EDIT_TASK: {
       return { ...state, taskEdit: action.task };
     }
+    
+    case UPDATE_TASK: {
+      state.taskEdit = { ...state.taskEdit, taskName: action.taskName };
+      let taskListUpdate = [...state.taskList];
+      let index = taskListUpdate.findIndex(
+        (task) => task.id === state.taskEdit.id
+      );
+
+      if (index !== -1) {
+        taskListUpdate[index] = state.taskEdit;
+      }
+      state.taskList = taskListUpdate;
+      state.taskEdit = { id: "-1", taskName: "", done: false };
+      return { ...state };
+    }
+    
+
+   
 
     default:
       return state;

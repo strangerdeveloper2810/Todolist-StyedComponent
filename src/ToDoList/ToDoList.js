@@ -13,6 +13,7 @@ import {
   DeleteTaskAction,
   DoneTaskAction,
   EditTaskAction,
+  UpdateTaskAction,
 } from "../redux/actions/ToDoListAction";
 import { arrTheme } from "../themes/ThemeManager";
 class ToDoList extends Component {
@@ -90,7 +91,7 @@ class ToDoList extends Component {
       );
     });
   };
-    
+
   render() {
     return (
       <div>
@@ -132,7 +133,9 @@ class ToDoList extends Component {
             >
               <i className="fa fa-plus"> Add Task</i>
             </Button>
-            <Button className="ms-2">
+            <Button className="ms-2" onClick={()=>{
+              this.props.dispatch(UpdateTaskAction(this.state.taskName));
+            }}>
               <i className="fa fa-upload"> Update Task</i>
             </Button>
             <hr />
