@@ -12,6 +12,7 @@ import {
   ChangeThemeAction,
   DeleteTaskAction,
   DoneTaskAction,
+  EditTaskAction,
 } from "../redux/actions/ToDoListAction";
 import { arrTheme } from "../themes/ThemeManager";
 class ToDoList extends Component {
@@ -26,7 +27,12 @@ class ToDoList extends Component {
           <Tr key={index}>
             <Th>{task.taskName}</Th>
             <Th className="text-end">
-              <Button className="ms-2">
+              <Button
+                className="ms-2"
+                onClick={() => {
+                  this.props.dispatch(EditTaskAction(task));
+                }}
+              >
                 <i className="fa fa-edit"></i>
               </Button>
 
@@ -74,7 +80,7 @@ class ToDoList extends Component {
         );
       });
   };
-  
+
   renderTheme = () => {
     return arrTheme.map((theme, index) => {
       return (
@@ -84,15 +90,18 @@ class ToDoList extends Component {
       );
     });
   };
+    
   render() {
     return (
       <div>
         <ThemeProvider theme={this.props.ThemeDefault}>
           <Container>
-            <Dropdown onChange={(event)=>{
-              let {value} = event.target
-              this.props.dispatch(ChangeThemeAction(value));
-            }}>
+            <Dropdown
+              onChange={(event) => {
+                let { value } = event.target;
+                this.props.dispatch(ChangeThemeAction(value));
+              }}
+            >
               {this.renderTheme()}
             </Dropdown>
 
@@ -100,6 +109,7 @@ class ToDoList extends Component {
             <TextField
               label="Task Name"
               name="taskName"
+              value={this.state.taskName}
               className="w-75"
               onChange={(event) => {
                 this.setState({
@@ -141,11 +151,24 @@ class ToDoList extends Component {
       </div>
     );
   }
+
+  //Đây là lifecycle trả về props cũ và state cũ của component trước khi render (lifecycle này chạy sau render)
+  componentDidUpdate(prevProps, prevState) {
+    //So sánh nếu như props trước đó (taskEdit trước khác taskEdit hiện tại thì mình mới setState)
+    if(prevProps.taskEdit.id !== this.props.taskEdit.id) {
+      this.setState({
+        taskName: this.props.taskEdit.taskName
+      },()=>{
+        console.log(this.state);
+      });
+    }
+  }
 }
 const mapStateToProps = (state) => {
   return {
     ThemeDefault: state.ToDoListReducer.ThemeDefault,
     taskList: state.ToDoListReducer.taskList,
+    taskEdit: state.ToDoListReducer.taskEdit,
   };
 };
 export default connect(mapStateToProps)(ToDoList);
